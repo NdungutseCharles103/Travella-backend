@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { model, models, Schema } from 'mongoose';
+import { registerSchema } from 'swaggiffy';
 
 export const UserSchema = new Schema({
   name: {
@@ -28,3 +29,5 @@ export default interface User extends Document {
 }
 
 export const UserModel = models.User || model('User', UserSchema);
+
+registerSchema('User', UserSchema, { orm: 'mongoose' });

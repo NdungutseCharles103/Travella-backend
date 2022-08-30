@@ -13,7 +13,8 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import User from '../schemas/user.schema';
-import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
+import { registerDefinition } from 'swaggiffy';
 
 @Controller('users')
 export class UsersController {
@@ -21,6 +22,10 @@ export class UsersController {
 
   @Post()
   async create(@Body() user: User) {
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(user.password, salt);
+    // const hashedPassword = await hash(user.password);
+    user.password = hashedPassword;
     try {
       const newuser = await this.usersService.create(user);
       return new HttpException({ message: "User created successfully", data: newuser}, 201);
