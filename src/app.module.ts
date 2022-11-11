@@ -5,11 +5,13 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TravelsModule } from './travels/travels.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     UsersModule,
-    MongooseModule.forRoot('mongodb://localhost/nestjs'),
+    MongooseModule.forRoot(process.env.DB_URL),
     TravelsModule,
   ],
   controllers: [AppController],
