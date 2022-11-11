@@ -3,7 +3,9 @@ import { Travel } from './../schemas/travel.schema';
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException } from '@nestjs/common';
 import { TravelsService } from './travels.service';
 import { resHandler } from '../utils/resHandler';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('travels')
 @Controller('travels')
 export class TravelsController {
   constructor(private readonly travelsService: TravelsService) {}

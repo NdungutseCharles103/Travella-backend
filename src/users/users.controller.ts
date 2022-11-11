@@ -14,8 +14,9 @@ import {
 import { UsersService } from './users.service';
 import User from '../schemas/user.schema';
 import * as bcrypt from 'bcrypt';
-import { registerDefinition } from 'swaggiffy';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
