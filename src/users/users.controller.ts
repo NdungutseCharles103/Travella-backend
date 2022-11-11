@@ -1,3 +1,4 @@
+import { responses } from './../utils/index';
 /* eslint-disable prettier/prettier */
 import { HttpException } from '@nestjs/common';
 import { resHandler } from './../utils/resHandler';
@@ -14,12 +15,12 @@ import {
 import { UsersService } from './users.service';
 import User from '../schemas/user.schema';
 import * as bcrypt from 'bcrypt';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   async create(@Body() user: User) {
@@ -29,7 +30,7 @@ export class UsersController {
     user.password = hashedPassword;
     try {
       const newuser = await this.usersService.create(user);
-      return new HttpException({ message: "User created successfully", data: newuser}, 201);
+      return new HttpException({ message: "User created successfully", data: newuser }, 201);
     } catch (error) {
       resHandler(error);
     }
@@ -39,17 +40,25 @@ export class UsersController {
   async findAll() {
     try {
       const users = await this.usersService.findAll();
-      return new HttpException({ message: " All Users ",data: users}, 200);
+      return new HttpException({ message: " All Users ", data: users }, 200);
     } catch (error) {
       resHandler(error);
     }
   }
 
   @Get(':id')
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Should be an id of a user that exists in the database',
+    type: Number
+  })
+  @ApiResponse({...responses.fetched ,  type: User})
+  @ApiResponse(responses.fetched)
   async findOne(@Param('id') id: string) {
     try {
       const user = await this.usersService.findOne(id);
-      return new HttpException({data: user}, 200);
+      return new HttpException({ data: user }, 200);
     } catch (error) {
       resHandler(error);
     }

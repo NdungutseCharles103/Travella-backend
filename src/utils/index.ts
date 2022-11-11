@@ -12,3 +12,14 @@ export const compare = async (item: string, hash: string) => {
     return compared;
 }
 
+export const responses = {
+    notfound: {
+        status: 404,
+        description: 'A post with given id does not exist.'
+    },
+    fetched: {
+        status: 200,
+        description: 'Data has been successfully fetched',
+    }
+}
+

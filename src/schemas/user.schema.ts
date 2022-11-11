@@ -1,33 +1,46 @@
 /* eslint-disable prettier/prettier */
-import { model, models, Schema } from 'mongoose';
-import { registerSchema } from 'swaggiffy';
+import { SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { Prop, Schema } from "@nestjs/mongoose";
+import { ApiProperty } from '@nestjs/swagger';
 
-export const UserSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+export type UserDocument = User & Document;
 
-export default interface User extends Document {
-    name: string;
-    email: string;
-    password: string;
-    createdAt: Date;
+@Schema()
+export default class User {
+
+  @ApiProperty()
+  @Prop({ required: true })
+  name: string
+
+  @ApiProperty()
+  @Prop({ required: true })
+  email: string
+
+  @ApiProperty()
+  @Prop({ required: true })
+  password: string
+
+  @ApiProperty()
+  @Prop({ required: true })
+  phone: string
+
+  @ApiProperty()
+  @Prop({ required: true })
+  role: string
+
+  @ApiProperty()
+  @Prop({ required: true })
+  createdAt: Date
+
+  @ApiProperty()
+  @Prop({ required: true })
+  updatedAt: Date
+
+  @ApiProperty()
+  @Prop({ required: true })
+  deletedAt: Date
 }
 
-export const UserModel = models.User || model('User', UserSchema);
+export const UserSchema = SchemaFactory.createForClass(User);
 
-registerSchema('User', UserSchema, { orm: 'mongoose' });

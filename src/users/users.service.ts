@@ -1,4 +1,4 @@
-import { UserModel } from './../schemas/user.schema';
+import { UserDocument } from './../schemas/user.schema';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import User from 'src/schemas/user.schema';
@@ -7,7 +7,7 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(@InjectModel('User') private userModel: Model<UserDocument>) {}
 
   async create(user: User) {
     const createdUser = new this.userModel(user);

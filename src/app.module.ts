@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TravelsModule } from './travels/travels.module';
 import { ConfigModule } from '@nestjs/config';
+import { TicketsModule } from './tickets/tickets.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     MongooseModule.forRoot(process.env.DB_URL),
     TravelsModule,
+    TicketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
