@@ -15,6 +15,11 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .build();
+    app.enableCors({
+      origin: ['http://127.0.0.1:7171', 'http://localhost:7171'],
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    });
   const document = SwaggerModule.createDocument(app, config);
   const PORT = process.env.PORT || 3434;
   SwaggerModule.setup('api', app, document);

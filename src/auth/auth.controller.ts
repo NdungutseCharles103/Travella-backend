@@ -32,7 +32,7 @@ export class AuthController {
             const data: any = await this.authService.register(user);
             if (data.success) {
                 res.setCookie('access_token', data.token, { httpOnly: true });
-                return new HttpException({ message: "User registered succesrsfully", data: data }, 201);
+                return new HttpException({ message: "User registered succesrsfully", data: data.token }, 201);
             }
             return new HttpException(data, 400)
         } catch (error) {

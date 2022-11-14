@@ -11,7 +11,7 @@ export default class User {
 
   @ApiProperty()
   @Prop({ required: true })
-  name: string
+  names: string
 
   @ApiProperty()
   @Prop({ required: true })
@@ -22,23 +22,23 @@ export default class User {
   password: string
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop()
   phone: string
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ required: true, default: 'traveller' })
   role: string
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ required: true, default: Date.now() })
   createdAt: Date
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop({ required: true, default: Date.now() })
   updatedAt: Date
 
   @ApiProperty()
-  @Prop({ required: true })
+  @Prop()
   deletedAt: Date
 }
 
