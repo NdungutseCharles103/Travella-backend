@@ -1,6 +1,10 @@
+import { FastifyReply } from 'fastify';
+import { FastifyRequest } from 'fastify';
+import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
+import { LocalAuthGuard } from './../auth/guards/local-auth.guard';
 import { responses } from './../utils/index';
 /* eslint-disable prettier/prettier */
-import { HttpException } from '@nestjs/common';
+import { HttpException, UseGuards, Req, Res } from '@nestjs/common';
 import { resHandler } from './../utils/resHandler';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
@@ -37,7 +41,7 @@ export class UsersController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
     try {
       const users = await this.usersService.findAll();
       return new HttpException({ message: " All Users ", data: users }, 200);

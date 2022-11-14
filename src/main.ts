@@ -1,12 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import fastifyCookie from '@fastify/cookie';
 
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, new FastifyAdapter());
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+  app.register(fastifyCookie);
   const config = new DocumentBuilder()
     .setTitle('Travella apis')
     .setDescription('Travels API description')
@@ -19,7 +21,7 @@ async function bootstrap() {
   const started = await app.listen(PORT);
 
   if (started) {
-    console.log(`Server started on port ${PORT}`);
+    console.log(`Server started on port ${await app.getUrl()}`);
   }
 
   if (module.hot) {
