@@ -13,7 +13,7 @@ export class AuthService {
     @InjectModel('User') private userModel: Model<UserDocument>,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(email);
@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const validUser = await this.userModel.findOne({email: user.email});
+    const validUser = await this.userModel.findOne({ email: user.email });
     if (!validUser) {
       return new HttpException({ message: 'User not found' }, 400);
     }
@@ -39,16 +39,22 @@ export class AuthService {
       return new HttpException({ message: 'Invalid email or password' }, 401);
     }
     const token = await this.sign(validUser);
-    return { token, success: true};
+    return { token, success: true };
   }
 
   async register(user: User) {
-    const userExists = await this.userModel.findOne({email: user.email});
-    if (userExists) {
-      return new HttpException({ message: 'User already exists' }, 400);
+    try {
+      const userExists = await this.userModel.findOne({ email: user.email });
+      if (userExists) {
+        return new HttpException({ message: 'User already exists' }, 400);
+      }
+      const newUser = await this.userModel.create(user);
+      const token = await this.sign(newUser);
+      console.log('created a new user');
+      return { token, success: true };
+
+    } catch (error) {
+      console.log(error);
     }
-    const newUser = await this.userModel.create(user);
-    const token = await this.sign(newUser);
-    return { token, success: true };
   }
 }

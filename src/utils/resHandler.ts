@@ -1,10 +1,11 @@
+import { FastifyReply } from 'fastify';
 /* eslint-disable prettier/prettier */
 import { HttpException } from '@nestjs/common';
 
-export const resHandler = (error: any) => {
+export const resHandler = (error: any, res: FastifyReply) => {
   if (error?._message) {
-    throw new HttpException(error._message, 400);
+    res.status(400).send({ message: error._message });
   }else{
-    throw new HttpException('Something went wrong', 500);
+    res.status(400).send({ message: error.message??'Something went wrong!' });
   }
 };

@@ -26,27 +26,15 @@ import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @Post()
-  async create(@Body() user: User) {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(user.password, salt);
-    // const hashedPassword = await hash(user.password);
-    user.password = hashedPassword;
-    try {
-      const newuser = await this.usersService.create(user);
-      return new HttpException({ message: "User created successfully", data: newuser }, 201);
-    } catch (error) {
-      resHandler(error);
-    }
-  }
-
   @Get()
   async findAll(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
     try {
       const users = await this.usersService.findAll();
-      return new HttpException({ message: " All Users ", data: users }, 200);
+      console.log(users);
+      // return new HttpException({ message: " All Users ", data: users }, 200);
+      res.status(200).send({ message: " All Users ", data: users });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 
@@ -59,32 +47,32 @@ export class UsersController {
   })
   @ApiResponse({...responses.fetched ,  type: User})
   @ApiResponse(responses.fetched)
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @Res() res: FastifyReply) {
     try {
       const user = await this.usersService.findOne(id);
-      return new HttpException({ data: user }, 200);
+      res.status(200).send({ message: "User", data: user });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() user: User) {
+  async update(@Param('id') id: string, @Body() user: User, @Res() res: FastifyReply) {
     try {
       const updatedUser = await this.usersService.update(id, user);
-      return new HttpException(updatedUser, 200);
+      res.status(200).send({ message: "User updated successfully", data: updatedUser });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string, @Res() res: FastifyReply)  {
     try {
       const deletedUser = await this.usersService.remove(id);
-      return new HttpException(deletedUser, 200);
+      res.status(202).send({ message: "User deleted successfully", data: deletedUser });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 }

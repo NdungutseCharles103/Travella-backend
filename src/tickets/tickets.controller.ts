@@ -1,7 +1,8 @@
+import { FastifyReply } from 'fastify';
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, Res } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { resHandler } from '../utils/resHandler';
 import { ApiTags } from '@nestjs/swagger';
@@ -13,52 +14,52 @@ export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) { }
 
   @Post()
-  async create(@Body() ticket: Ticket) {
+  async create(@Body() ticket: Ticket, @Res() res: FastifyReply) {
     try {
       const newTicket = await this.ticketsService.create(ticket);
-      return new HttpException({ message: "Ticket created successfully", data: newTicket }, 201);
+      res.status(201).send({ message: "Ticket created successfully", data: newTicket });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Res() res: FastifyReply) {
     try {
       const tickets = await this.ticketsService.findAll();
-      return new HttpException({ message: " All Tickets ", data: tickets }, 200);
+      res.status(200).send({ message: " All Tickets ", data: tickets });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @Res() res: FastifyReply) {
     try {
       const ticket = await this.ticketsService.findOne(id);
-      return new HttpException({ data: ticket }, 200);
+      res.status(200).send({ message: "Ticket", data: ticket });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() ticket: Ticket) {
+  async update(@Param('id') id: string, @Body() ticket: Ticket, @Res() res: FastifyReply) {
     try {
       const updatedTicket = await this.ticketsService.update(id, ticket);
-      return new HttpException({ message: "Ticket updated successfully", data: updatedTicket }, 200);
+      res.status(200).send({ message: "Ticket updated successfully", data: updatedTicket });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string, @Res() res: FastifyReply) {
     try {
       const deletedTicket = await this.ticketsService.remove(id);
-      return new HttpException({ message: "Ticket deleted successfully", data: deletedTicket }, 200);
+      res.status(202).send({ message: "Ticket deleted successfully", data: deletedTicket });
     } catch (error) {
-      resHandler(error);
+      resHandler(error, res);
     }
   }
 

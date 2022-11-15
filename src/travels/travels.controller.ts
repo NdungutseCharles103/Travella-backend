@@ -1,6 +1,7 @@
+import { FastifyReply } from 'fastify';
 import { Travel } from './../schemas/travel.schema';
 /* eslint-disable*/
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, Res } from '@nestjs/common';
 import { TravelsService } from './travels.service';
 import { resHandler } from '../utils/resHandler';
 import { ApiTags } from '@nestjs/swagger';
@@ -11,12 +12,12 @@ export class TravelsController {
   constructor(private readonly travelsService: TravelsService) {}
 
   @Post()
-  async create(@Body() travel: Travel) {
+  async create(@Body() travel: Travel, @Res() res: FastifyReply) {
     try {
       const newtravel = await this.travelsService.create(travel);
       return new HttpException({ message: "travel created successfully", data: newtravel}, 201);
     } catch (error) {
-      resHandler(error)
+      resHandler(error, res)
     }
   }
 

@@ -1,9 +1,8 @@
-import { Body, Controller, HttpException, Post, UseGuards, Req, Res } from "@nestjs/common";
+import { Body, Controller, Post, UseGuards, Req, Res } from "@nestjs/common";
 import { ApiTags, } from "@nestjs/swagger";
 import User from "../schemas/user.schema";
 import { resHandler } from "../utils/resHandler";
 import { AuthService } from "./auth.service";
-import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { FastifyReply } from "fastify";
 
 @ApiTags('auth')
@@ -17,12 +16,12 @@ export class AuthController {
             const data: any = await this.authService.login(user);
             if (data.success) {
                 res.setCookie('access_token', data.token, { httpOnly: true });
-                return new HttpException({ message: "User logged in successfully", data: data.token }, 202);
+               return res.status(200).send({ message: "User logged in successfully", data: data.token });
             }
-            return new HttpException(data, 400)
+            res.status(400).send(data);
         } catch (error) {
             console.log(error);
-            resHandler(error);
+            resHandler(error, res);
         }
     }
 
@@ -32,11 +31,15 @@ export class AuthController {
             const data: any = await this.authService.register(user);
             if (data.success) {
                 res.setCookie('access_token', data.token, { httpOnly: true });
-                return new HttpException({ message: "User registered succesrsfully", data: data.token }, 201);
+                console.log('succusses');
+               return res.status(201).send({ message: "User registered successfully", data: data.token });
+            } else {
+                console.log('failed');
+                res.status(400).send(data);
             }
-            return new HttpException(data, 400)
         } catch (error) {
-            resHandler(error);
+            console.log('error');
+            resHandler(error, res);
         }
     }
 }
