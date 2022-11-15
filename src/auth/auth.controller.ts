@@ -16,7 +16,7 @@ export class AuthController {
             const data: any = await this.authService.login(user);
             if (data.success) {
                 res.setCookie('access_token', data.token, { httpOnly: true });
-               return res.status(200).send({ message: "User logged in successfully", data: data.token });
+               return res.status(200).send({ message: "User logged in successfully", data: data.token, user: data.user });
             }
             res.status(400).send(data);
         } catch (error) {
@@ -32,7 +32,7 @@ export class AuthController {
             if (data.success) {
                 res.setCookie('access_token', data.token, { httpOnly: true });
                 console.log('succusses');
-               return res.status(201).send({ message: "User registered successfully", data: data.token });
+               return res.status(201).send({ message: "User registered successfully", data: data.token, user: data.user });
             } else {
                 console.log('failed');
                 res.status(400).send(data);

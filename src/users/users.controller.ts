@@ -28,6 +28,8 @@ export class UsersController {
 
   @Get()
   async findAll(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+    console.log('req.user', req.cookies.token);
+    
     try {
       const users = await this.usersService.findAll();
       console.log(users);
@@ -71,6 +73,17 @@ export class UsersController {
     try {
       const deletedUser = await this.usersService.remove(id);
       res.status(202).send({ message: "User deleted successfully", data: deletedUser });
+    } catch (error) {
+      resHandler(error, res);
+    }
+  }
+
+  @Get('/me')
+  async me(@Req() req: FastifyRequest | any, @Res() res: FastifyReply) {
+    const id = req.user.sub;
+    try {
+      const user = await this.usersService.findOne(id);
+      res.status(200).send({ message: "User", data: user });
     } catch (error) {
       resHandler(error, res);
     }

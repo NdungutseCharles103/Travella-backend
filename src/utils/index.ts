@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 export const hash = async (item: string) => {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(item, salt);
+    const hashedPassword = await bcrypt.hash(item, 10);
     return hashedPassword;
 };
 

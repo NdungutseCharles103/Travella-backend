@@ -1,3 +1,5 @@
+import { jwtConstants } from './constants';
+import { hash } from './../utils/index';
 import { UserDocument } from './../schemas/user.schema';
 import { HttpException, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
@@ -24,6 +26,17 @@ export class AuthService {
     return null;
   }
 
+  async verify(token: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      throw new HttpException(error, 401);
+    }
+  }
+
   async sign(user: UserDocument) {
     const payload = { email: user.email, sub: user._id };
     return this.jwtService.sign(payload);
@@ -36,22 +49,24 @@ export class AuthService {
     }
     const validPassword = await compare(user.password, validUser.password);
     if (!validPassword) {
-      return new HttpException({ message: 'Invalid email or password' }, 401);
+      return new HttpException({ message: 'Invalid email or password' }, 400);
     }
     const token = await this.sign(validUser);
-    return { token, success: true };
+    return { token, success: true, user: validUser };
   }
 
   async register(user: User) {
     try {
       const userExists = await this.userModel.findOne({ email: user.email });
+      console.log(userExists);
       if (userExists) {
         return new HttpException({ message: 'User already exists' }, 400);
       }
-      const newUser = await this.userModel.create(user);
+      const hashedPass = await hash(user.password);
+      const newUser = await this.userModel.create({ ...user, password: hashedPass });
       const token = await this.sign(newUser);
       console.log('created a new user');
-      return { token, success: true };
+      return { token, success: true, user: newUser };
 
     } catch (error) {
       console.log(error);

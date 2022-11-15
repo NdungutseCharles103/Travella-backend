@@ -8,7 +8,7 @@ declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
-  app.register(fastifyCookie);
+  await app.register(fastifyCookie);
   const config = new DocumentBuilder()
     .setTitle('Travella apis')
     .setDescription('Travels API description')
