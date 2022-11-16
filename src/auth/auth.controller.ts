@@ -3,7 +3,7 @@ import { ApiTags, } from "@nestjs/swagger";
 import User from "../schemas/user.schema";
 import { resHandler } from "../utils/resHandler";
 import { AuthService } from "./auth.service";
-import { FastifyReply } from "fastify";
+import { Response } from "express";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -11,14 +11,14 @@ export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
     @Post('login')
-    async login(@Body() user: User, @Res({ passthrough: true }) res: FastifyReply) {
+    async login(@Body() user: User, @Res({ passthrough: true }) res: Response) {
         try {
             const data: any = await this.authService.login(user);
             if (data.success) {
-                res.setCookie('access_token', data.token, { httpOnly: true });
-               return res.status(200).send({ message: "User logged in successfully", data: data.token, user: data.user });
+                res.cookie('access_token', data.token, { httpOnly: true, sameSite: false });
+                return res.status(200).json({ message: "User logged in successfully", data: data.token, user: data.user });
             }
-            res.status(400).send(data);
+            res.status(400).json(data);
         } catch (error) {
             console.log(error);
             resHandler(error, res);
@@ -26,16 +26,16 @@ export class AuthController {
     }
 
     @Post('register')
-    async register(@Body() user: User, @Res() res: FastifyReply) {
+    async register(@Body() user: User, @Res() res: Response) {
         try {
             const data: any = await this.authService.register(user);
             if (data.success) {
-                res.setCookie('access_token', data.token, { httpOnly: true });
+                res.cookie('access_token', data.token, { httpOnly: true, sameSite: false });
                 console.log('succusses');
-               return res.status(201).send({ message: "User registered successfully", data: data.token, user: data.user });
+                return res.status(201).json({ message: "User registered successfully", data: data.token, user: data.user });
             } else {
                 console.log('failed');
-                res.status(400).send(data);
+                res.status(400).json(data);
             }
         } catch (error) {
             console.log('error');

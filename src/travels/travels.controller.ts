@@ -1,4 +1,4 @@
-import { FastifyReply } from 'fastify';
+import { Response } from 'express';
 import { Travel } from './../schemas/travel.schema';
 /* eslint-disable*/
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, Res } from '@nestjs/common';
@@ -9,13 +9,13 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('travels')
 @Controller('travels')
 export class TravelsController {
-  constructor(private readonly travelsService: TravelsService) {}
+  constructor(private readonly travelsService: TravelsService) { }
 
   @Post()
-  async create(@Body() travel: Travel, @Res() res: FastifyReply) {
+  async create(@Body() travel: Travel, @Res() res: Response) {
     try {
       const newtravel = await this.travelsService.create(travel);
-      return new HttpException({ message: "travel created successfully", data: newtravel}, 201);
+      return new HttpException({ message: "travel created successfully", data: newtravel }, 201);
     } catch (error) {
       resHandler(error, res)
     }

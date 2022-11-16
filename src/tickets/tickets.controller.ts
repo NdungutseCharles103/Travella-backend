@@ -1,4 +1,4 @@
-import { FastifyReply } from 'fastify';
+import { Response } from 'express';
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -14,50 +14,50 @@ export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) { }
 
   @Post()
-  async create(@Body() ticket: Ticket, @Res() res: FastifyReply) {
+  async create(@Body() ticket: Ticket, @Res() res: Response) {
     try {
       const newTicket = await this.ticketsService.create(ticket);
-      res.status(201).send({ message: "Ticket created successfully", data: newTicket });
+      res.status(201).json({ message: "Ticket created successfully", data: newTicket });
     } catch (error) {
       resHandler(error, res);
     }
   }
 
   @Get()
-  async findAll(@Res() res: FastifyReply) {
+  async findAll(@Res() res: Response) {
     try {
       const tickets = await this.ticketsService.findAll();
-      res.status(200).send({ message: " All Tickets ", data: tickets });
+      res.status(200).json({ message: " All Tickets ", data: tickets });
     } catch (error) {
       resHandler(error, res);
     }
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Res() res: FastifyReply) {
+  async findOne(@Param('id') id: string, @Res() res: Response) {
     try {
       const ticket = await this.ticketsService.findOne(id);
-      res.status(200).send({ message: "Ticket", data: ticket });
+      res.status(200).json({ message: "Ticket", data: ticket });
     } catch (error) {
       resHandler(error, res);
     }
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() ticket: Ticket, @Res() res: FastifyReply) {
+  async update(@Param('id') id: string, @Body() ticket: Ticket, @Res() res: Response) {
     try {
       const updatedTicket = await this.ticketsService.update(id, ticket);
-      res.status(200).send({ message: "Ticket updated successfully", data: updatedTicket });
+      res.status(200).json({ message: "Ticket updated successfully", data: updatedTicket });
     } catch (error) {
       resHandler(error, res);
     }
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Res() res: FastifyReply) {
+  async remove(@Param('id') id: string, @Res() res: Response) {
     try {
       const deletedTicket = await this.ticketsService.remove(id);
-      res.status(202).send({ message: "Ticket deleted successfully", data: deletedTicket });
+      res.status(202).json({ message: "Ticket deleted successfully", data: deletedTicket });
     } catch (error) {
       resHandler(error, res);
     }

@@ -1,6 +1,5 @@
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { FastifyRequest, FastifyReply } from 'fastify';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 
@@ -8,20 +7,21 @@ import { Request, Response, NextFunction } from 'express';
 export class AuthMiddleware implements NestMiddleware {
     constructor(private readonly authService: AuthService) { }
 
-    async use(req: FastifyRequest | any, res: FastifyReply, next: NextFunction) {
-        console.log(req.cookies);
+    async use(req: Request, res: Response, next: NextFunction) {
+        console.log(req.headers);
+        console.log(req.cookies.access_token);
         const access_token = req.headers.authorization;
         try {
             if (access_token) {
                 const user = await this.authService.verify(access_token);
                 req.user = user;
-               return next();
+                return next();
             }
-            return res.status(401).send({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Unauthorized' });
         } catch (error) {
             console.log(error);
             next()
-            res.status(400).send({ message: 'Invalid token' });
+            res.status(400).json({ message: 'Invalid token' });
         }
     }
 }
