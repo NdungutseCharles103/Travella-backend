@@ -16,7 +16,7 @@ async function bootstrap() {
     .build();
 
   app.enableCors({
-    origin: ['http://127.0.0.1:7171', 'http://localhost:7171'],
+    origin: ['http://127.0.0.1:7171', 'http://localhost:7171', 'https://mytravella.vercel.app','https://travella-fawn.vercel.app'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Authorization', 'Content-Type']

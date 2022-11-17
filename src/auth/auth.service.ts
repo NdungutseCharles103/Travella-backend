@@ -27,8 +27,10 @@ export class AuthService {
   }
 
   async verify(token: string) {
+    const isBearer = token.split(' ')[0] === 'Bearer';
+    const newtoken = isBearer ? token.split(' ')[1] : token;
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const payload = await this.jwtService.verifyAsync(newtoken, {
         secret: jwtConstants.secret,
       });
       return payload;
@@ -48,9 +50,8 @@ export class AuthService {
       return new HttpException({ message: 'User not found' }, 400);
     }
     const validPassword = await compare(user.password, validUser.password);
-    if (!validPassword) {
+    if (!validPassword)
       return new HttpException({ message: 'Invalid email or password' }, 400);
-    }
     const token = await this.sign(validUser);
     return { token, success: true, user: validUser };
   }

@@ -1,6 +1,6 @@
 import { responses } from './../utils/index';
 /* eslint-disable prettier/prettier */
-import { Req, Res } from '@nestjs/common';
+import { Req, Res, UseGuards } from '@nestjs/common';
 import { resHandler } from './../utils/resHandler';
 import {
   Controller,
@@ -21,6 +21,7 @@ import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  @UseGuards()
   @Get('allUsers')
   async findAll(@Req() req: Request, @Res() res: Response) {
     console.log('req.user', req.cookies.token);
@@ -78,7 +79,7 @@ export class UsersController {
     const id = req.user?.sub ?? null;
     try {
       const user = await this.usersService.findOne(id);
-      res.status(200).json({ message: "User", data: user });
+      return res.status(200).json({ message: "User", data: user });
     } catch (error) {
       console.log(error);
       resHandler(error, res);
