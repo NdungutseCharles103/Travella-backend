@@ -41,7 +41,9 @@ export class AuthService {
 
   async sign(user: UserDocument) {
     const payload = { email: user.email, sub: user._id };
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, {
+      expiresIn: '365d'
+    });
   }
 
   async login(user: User) {

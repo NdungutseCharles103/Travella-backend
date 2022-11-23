@@ -20,8 +20,7 @@ export class AuthMiddleware implements NestMiddleware {
             return res.status(401).json({ message: 'Unauthorized' });
         } catch (error) {
             console.log(error);
-            next()
-            res.status(400).json({ message: 'Invalid token' });
+           return res.status(400).json({ message: 'Invalid token' });
         }
     }
 }
