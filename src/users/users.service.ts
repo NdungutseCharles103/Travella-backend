@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('User') private userModel: Model<UserDocument>,) {}
+  constructor(@InjectModel('User') private userModel: Model<UserDocument>,) { }
 
   async create(user: User) {
     const createdUser = new this.userModel(user);
@@ -36,9 +36,37 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
 
-  async whoAmi(id: string){
+  async whoAmi(id: string) {
     return this.userModel.findOne({
       _id: id
+    })
+  }
+
+  async savePlace(id: string, place: any) {
+    return this.userModel.updateOne({
+      _id: id
+    }, {
+      $push: {
+        savedPlaces: place
+      }
+    })
+  }
+
+  async removePlace(id: string, place: any) {
+    return this.userModel.updateOne({
+      _id: id
+    }, {
+      $pull: {
+        savedPlaces: place
+      }
+    })
+  }
+
+  async updatePassword(id: string, password: string) {
+    return this.userModel.updateOne({
+      _id: id
+    }, {
+      password
     })
   }
 }

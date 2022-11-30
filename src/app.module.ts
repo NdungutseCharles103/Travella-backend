@@ -9,6 +9,7 @@ import { TravelsModule } from './travels/travels.module';
 import { ConfigModule } from '@nestjs/config';
 import { TicketsModule } from './tickets/tickets.module';
 import { AuthModule } from './auth/auth.module';
+import { PlacesModule } from './places/places.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRoot(process.env.DB_URL),
     TravelsModule,
     TicketsModule,
+    PlacesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

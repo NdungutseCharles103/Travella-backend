@@ -30,6 +30,14 @@ export default class User {
   role: string
 
   @ApiProperty()
+  @Prop({ default: [] })
+  savedPlaces: any[]
+
+  @ApiProperty()
+  @Prop({ default: [] })
+  savedHotels: any[]
+
+  @ApiProperty()
   @Prop({ required: true, default: Date.now() })
   createdAt: Date
 

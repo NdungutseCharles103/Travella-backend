@@ -1,4 +1,4 @@
-import { responses } from './../utils/index';
+import { compare, hash, responses } from './../utils/index';
 /* eslint-disable prettier/prettier */
 import { Req, Res, UseGuards } from '@nestjs/common';
 import { resHandler } from './../utils/resHandler';
@@ -79,6 +79,53 @@ export class UsersController {
     const id = req.user?.sub ?? null;
     try {
       const user = await this.usersService.findOne(id);
+      return res.status(200).json({ message: "User", data: user });
+    } catch (error) {
+      console.log(error);
+      resHandler(error, res);
+    }
+  } 
+
+  @Patch('user/me/updatepassword')
+  async updatePassword(@Req() req: Request | any, @Res() res: Response) {
+    const id = req.user?.sub ?? null;
+    const { oldPassword, newPassword } = req.body;
+    try {
+      const user = await this.usersService.findOne(id);
+      const isMatch = await compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Old password is incorrect" });
+      }
+      const hashedPassword = await hash(newPassword);
+      user.password = hashedPassword;
+      const updatedUser = await this.usersService.update(id, user);
+      return res.status(200).json({ message: "Password updated successfully", data: updatedUser });
+    } catch (error) {
+      console.log(error);
+      resHandler(error, res);
+    }
+  }
+
+
+  @Post('user/savePlace')
+  async savePlace(@Req() req: Request | any, @Res() res: Response) {
+    const id = req.user?.sub ?? null;
+    const place = req.body.place;
+    try {
+      const user = await this.usersService.savePlace(id, place);
+      return res.status(200).json({ message: "User", data: user });
+    } catch (error) {
+      console.log(error);
+      resHandler(error, res);
+    }
+  }
+
+  @Post('user/removePlace')
+  async removePlace(@Req() req: Request | any, @Res() res: Response) {
+    const id = req.user?.sub ?? null;
+    const place = req.body.place;
+    try {
+      const user = await this.usersService.removePlace(id, place);
       return res.status(200).json({ message: "User", data: user });
     } catch (error) {
       console.log(error);
